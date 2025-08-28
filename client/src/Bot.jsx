@@ -45,7 +45,7 @@ export default function Bot() {
       {/* Header */}
       <header className="fixed top-0 left-0 w-full border-b border-gray-800 bg-[#0d0d0d] z-10">
         <div className="container mx-auto flex justify-between items-center px-6 py-4">
-          <h1 className="text-lg font-bold">UXi</h1>
+          <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-500 text-4xl font-bold">UXi</h1>
           <FaUserCircle size={30} className="cursor-pointer" />
         </div>
       </header>
@@ -54,8 +54,8 @@ export default function Bot() {
       <main className="flex-1 overflow-y-auto pt-20 pb-24 flex items-center justify-center">
         <div className="w-full max-w-4xl mx-auto px-4 flex flex-col space-y-3">
           {messages.length === 0 ? (
-            <div className="text-center text-gray-400 text-lg">
-              ✌️ Hi, I'm <span className="text-green-500 font-semibold">UXi</span>. Ask me anything!
+            <div className="text-center text-gray-400 text-xl">
+              ✌️ Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-500 font-semibold text-3xl">UXi</span>. Ask me anything!
             </div>
           ) : (
             <>
