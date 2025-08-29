@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { FaUserCircle } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { FaUserCircle } from "react-icons/fa";
+import Wave from "./assets/wave.mp4";
 
 export default function Bot() {
   const [messages, setMessages] = useState([]);
@@ -9,41 +10,63 @@ export default function Bot() {
   const endRef = useRef(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
-    setLoading(true);
+  if (!input.trim()) return; // ignore empty messages
+  setLoading(true);
 
-    try {
-      const res = await axios.post("http://localhost:4002/api/bot/v1/message", { text: input });
-      setMessages(prev => [
-        ...prev,
-        { text: res.data.userMessage, sender: 'user' },
-        { text: res.data.botMessage, sender: 'bot' }
-      ]);
-    } catch (err) {
-      setMessages(prev => [
-        ...prev,
-        { text: "Network error. Please try again.", sender: 'bot' }
-      ]);
-    } finally {
-      setInput("");
-      setLoading(false);
-    }
-  };
+  const userMessage = input.trim();
+  setMessages(prev => [...prev, { text: userMessage, sender: "user" }]);
+  setInput("");
+
+  try {
+    // Send user message to server
+    const res = await axios.post("http://localhost:4002/api/message", {
+      message: userMessage,
+    });
+
+    // Get bot response object
+    const botResponse = res.data.botMessage;
+
+    // Default video is null
+    let botVideo = null;
+
+    // Map video key from server to local imported video
+    if (botResponse.video === "wave") botVideo = Wave;
+    // Add more if you have multiple videos
+    // if (botResponse.video === "dog") botVideo = DogVideo;
+
+    // Update messages with bot reply
+    setMessages(prev => [
+      ...prev,
+      { text: botResponse.text, video: botVideo, sender: "bot" },
+    ]);
+  } catch (err) {
+    // Handle network errors
+    setMessages(prev => [
+      ...prev,
+      { text: "Network error. Please try again.", sender: "bot" },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") sendMessage();
   };
 
   return (
-    <div className='flex flex-col min-h-screen bg-[#0d0d0d] text-white'>
+    <div className="flex flex-col min-h-screen bg-[#0d0d0d] text-white">
       {/* Header */}
       <header className="fixed top-0 left-0 w-full border-b border-gray-800 bg-[#0d0d0d] z-10">
         <div className="container mx-auto flex justify-between items-center px-6 py-4">
-          <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-500 text-4xl font-bold">UXi</h1>
+          <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-500 text-4xl font-bold">
+            UXi
+          </h1>
           <FaUserCircle size={30} className="cursor-pointer" />
         </div>
       </header>
@@ -53,7 +76,11 @@ export default function Bot() {
         <div className="w-full max-w-4xl mx-auto px-4 flex flex-col space-y-3">
           {messages.length === 0 ? (
             <div className="text-center text-gray-400 text-xl">
-              ✌️ Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-500 font-semibold text-3xl">UXi</span>. Ask me anything!
+              ✌️ Hi, I'm{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-500 font-semibold text-3xl">
+                UXi
+              </span>
+              . Ask me anything!
             </div>
           ) : (
             <>
@@ -61,12 +88,22 @@ export default function Bot() {
                 <div
                   key={idx}
                   className={`px-4 py-2 rounded-xl max-w-[75%] ${
-                    msg.sender === 'user'
-                      ? 'bg-blue-600 text-white self-end'
-                      : 'bg-gray-800 text-gray-100 self-start'
+                    msg.sender === "user"
+                      ? "bg-blue-600 text-white self-end"
+                      : "bg-gray-800 text-gray-100 self-start"
                   }`}
                 >
                   {msg.text}
+                  {msg.video && (
+                    <video
+                      src={msg.video}
+                      controls
+                      autoPlay
+                      muted      // important for autoplay to work in most browsers
+                      loop       // optional: repeat the video
+                      className="mt-2 rounded-lg max-w-full"
+                    />
+                  )}
                 </div>
               ))}
 
