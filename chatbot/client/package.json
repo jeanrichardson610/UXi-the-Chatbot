@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "https://jean.richardson610.github.io/uxi-the-chatbot>",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
