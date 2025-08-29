@@ -186,6 +186,19 @@ app.post("/api/message", (req, res) => {
   res.json({ userMessage: message, botMessage: response });
 });
 
-const PORT = process.env.PORT || 4002;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+function startServer(port) {
+  const server = app.listen(port, () => {
+    console.log(`Server running on port ${server.address().port}`);
+  });
 
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.log(`Port ${port} is busy, trying another port...`);
+      startServer(0); // 0 tells Node to pick a random free port
+    } else {
+      console.error(err);
+    }
+  });
+}
+
+startServer(4002); // Try port 4002 first
