@@ -1,0 +1,14 @@
+{
+  "name": "uxi-chatbot",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix ./server\" \"npm run dev --prefix ./client\"",
+    "install-server": "npm install --prefix ./server",
+    "install-client": "npm install --prefix ./client",
+    "install-all": "npm run install-server && npm run install-client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
