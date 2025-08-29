@@ -168,7 +168,7 @@ const botResponses = {
   "uxi": { text: "That is me" },
   "what is your favorite movie": { text: "I, Robot" },
   "what is your favorite video game": { text: "I have a couple: Control, Horizon Zero Dawn and Forbidden West and Stellar Blade" },
-  "what is your favorite video game character": { text: "Hmm...I do like Mai Shiranui. She has pretty fans" }
+  "who is your favorite video game character": { text: "Hmm...I do like Mai Shiranui. She has pretty fans" }
 }
 ;
 
